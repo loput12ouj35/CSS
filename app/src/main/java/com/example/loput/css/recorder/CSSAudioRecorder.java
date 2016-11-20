@@ -49,6 +49,7 @@ public class CSSAudioRecorder {
     public CSSAudioRecorder() throws Exception
     {
         nThread = new NetworkThread();
+        audioRecord = findAudioRecord();
 
         if( audioRecord == null )
         {
@@ -60,7 +61,6 @@ public class CSSAudioRecorder {
 
         if( !isRecording )
         {
-            audioRecord = findAudioRecord();
 
             nThread.start();
 
