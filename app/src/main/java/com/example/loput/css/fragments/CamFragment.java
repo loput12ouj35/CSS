@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 
 import com.example.loput.css.MainActivity;
 import com.example.loput.css.R;
+import com.example.loput.css.thread.NetworkThread;
 
 /**
  * Created by loput on 2016-11-10.
@@ -16,6 +17,7 @@ import com.example.loput.css.R;
 
 public class CamFragment extends Fragment {
     private ImageButton btBack;
+    private NetworkThread netThread;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,6 +34,15 @@ public class CamFragment extends Fragment {
         });
 
 
+        netThread = new NetworkThread();
+        netThread.start();
+
         return v;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        netThread.stopThread();
     }
 }

@@ -1,11 +1,15 @@
 package com.example.loput.css;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +47,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Xeno : requesting permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (getApplicationContext().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                        MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+            } else {
+                Log.d("Home", "Already granted access");
+                //initializeView(v);
+            }
+        }
+
         //기본 메뉴바, 버튼 세팅
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -72,6 +87,26 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
 
 
+    }
+
+    // Xeno : requesting permission
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 29;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Home", "Permission Granted");
+                    //initializeView(v);
+                } else {
+                    Log.d("Home", "Permission Failed");
+                    //Toast.makeText(getActivity().getBaseContext(), "You must allow permission record audio to your mobile device.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+            // Add additional cases for other permissions you may have asked for
+        }
     }
 
     @Override
@@ -106,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
 
     //화면 전환
     public enum Screen {dc, c, cam, mic}
+
+    private void micSetting()
+    {
+    }
 
     public void changeScreen(Screen sc) {
         Fragment f = dcFragment;
